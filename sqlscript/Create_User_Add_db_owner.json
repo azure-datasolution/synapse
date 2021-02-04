@@ -1,0 +1,16 @@
+{
+	"name": "Create_User_Add_db_owner",
+	"properties": {
+		"content": {
+			"query": "-- AD 사용자 유저 생성\nCREATE USER [tmddms@lselectricdatalake.onmicrosoft.com] FROM EXTERNAL PROVIDER;\n\n-- 권한부여 db_owner, db_ddladmin, db_datawriter, db_datareader, db_denydatawriter, db_denydatareader \nEXEC sp_addrolemember 'db_owner', [tmddms@lselectricdatalake.onmicrosoft.com];",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "lsedlsqlpool",
+				"databaseName": "lsedlsqlpool"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}
