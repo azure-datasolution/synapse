@@ -1,4 +1,4 @@
-# Analytics in a day Workshop Materials
+# Analytics in a day - Hands On Lab
 
 
 ### Lab File Download 
