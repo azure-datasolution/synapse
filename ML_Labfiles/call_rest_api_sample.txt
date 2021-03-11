@@ -1,0 +1,85 @@
+import urllib.request
+import json
+import os
+import ssl
+
+def allowSelfSignedHttps(allowed):
+    # bypass the server certificate verification on client side
+    if allowed and not os.environ.get('PYTHONHTTPSVERIFY', '') and getattr(ssl, '_create_unverified_context', None):
+        ssl._create_default_https_context = ssl._create_unverified_context
+
+allowSelfSignedHttps(True) # this line is needed if you use self-signed certificate in your scoring service.
+
+data = {
+    "data":
+    [
+        {
+            'transactionID': "40A1F735-520A-4885-9273-AFA2CB8DE4FF",
+            'accountID': "A1688853516417580",
+            'transactionAmountUSD': "798.86022",
+            'transactionAmount': "6198",
+            'transactionCurrencyCode': "HKD",
+            'transactionDate': "20130611",
+            'transactionTime': "40813",
+            'localHour': "13",
+            'transactionIPaddress': "153.129",
+            'ipState': "tokyo",
+            'ipPostcode': "100-0000",
+            'ipCountryCode': "jp",
+            'isProxyIP': "False",
+            'browserLanguage': "zh-HK",
+            'paymentInstrumentType': "CREDITCARD",
+            'cardType': "MC",
+            'paymentBillingPostalCode': "NA",
+            'paymentBillingState': "NA",
+            'paymentBillingCountryCode': "HK",
+            'cvvVerifyResult': "M",
+            'digitalItemCount': "2",
+            'physicalItemCount': "1",
+        },
+        {
+            'transactionID': "D11F3504-26D2-4FCF-AE33-0B96E80452F0",
+            'accountID': "A1055521409411370",
+            'transactionAmountUSD': "139.99",
+            'transactionAmount': "139.99",
+            'transactionCurrencyCode': "USD",
+            'transactionDate': "20130527",
+            'transactionTime': "201016",
+            'localHour': "13",
+            'transactionIPaddress': "75.7",
+            'ipState': "colorado",
+            'ipPostcode': "80113",
+            'ipCountryCode': "us",
+            'isProxyIP': "False",
+            'browserLanguage': "en-US",
+            'paymentInstrumentType': "CREDITCARD",
+            'cardType': "AMEX",
+            'paymentBillingPostalCode': "80108",
+            'paymentBillingState': "CO",
+            'paymentBillingCountryCode': "US",
+            'cvvVerifyResult': "M",
+            'digitalItemCount': "1",
+            'physicalItemCount': "0",
+        },
+    ],
+}
+
+body = str.encode(json.dumps(data))
+
+url = 'http://3a0f0e62-b670-4410-82d0-da51bad3b3a3.koreacentral.azurecontainer.io/score'
+api_key = '3RUM01ROCLKLw7a10uahWE1Bjh0ynMut' # Replace this with the API key for the web service
+headers = {'Content-Type':'application/json', 'Authorization':('Bearer '+ api_key)}
+
+req = urllib.request.Request(url, body, headers)
+
+try:
+    response = urllib.request.urlopen(req)
+
+    result = response.read()
+    print(result)
+except urllib.error.HTTPError as error:
+    print("The request failed with status code: " + str(error.code))
+
+    # Print the headers - they include the requert ID and the timestamp, which are useful for debugging the failure
+    print(error.info())
+    print(json.loads(error.read().decode("utf8", 'ignore')))
